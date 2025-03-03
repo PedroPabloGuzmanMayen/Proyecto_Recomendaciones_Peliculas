@@ -83,14 +83,38 @@ def get_genres():
         return record
     
 #Obtener información sobre los actores y directores
-def get_actors_directors(label):
+def get_directors():
     with driver.session() as session:
+        #Obtener los directores más populares
         query = f"""
-        MATCH (n:{label})
-        RETURN n.name
+        MATCH (n:Director) 
+        -[:DIRECTED]->
+        (m:Movie) 
+        where m.rating >= 8.0 
+        return n.name;
         """
         result = session.run(query)
         record = result.data()
         return record
 
-print(get_genres())
+#Obtener información sobre los actores
+def get_actors():
+    with driver.session() as session:
+        #Obtener los actores más populares
+        query = f"""
+        MATCH (n:Actor) 
+        -[r:ACTED_IN]->
+        (m:Movie) 
+        where m.rating >= 8.0
+        and r.order < 3
+        return n.name;
+        """
+        result = session.run(query)
+        record = result.data()
+        return record
+
+print(get_actors())
+
+    
+
+
