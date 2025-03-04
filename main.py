@@ -48,7 +48,6 @@ def menu_principal():
         [
             "Perfil", 
             "Mis Preferencias", 
-            "Reseñar Películas", 
             "Recomendaciones"
         ]
     )
