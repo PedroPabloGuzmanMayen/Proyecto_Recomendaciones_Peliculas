@@ -54,6 +54,12 @@ def menu_principal():
     
     if menu == "Perfil":
         st.header(f"Bienvenido, {st.session_state.username}")
+        st.subheader("Verificando usuario en la base de datos...")
+        if API.check_user_exists(st.session_state.username):
+            st.success("✅ El usuario existe en la base de datos.")
+        else:
+            st.error("❌ El usuario NO existe. Revisa la creación del usuario.")
+
     
     elif menu == "Mis Preferencias":
         Menu.preferencias_usuario()

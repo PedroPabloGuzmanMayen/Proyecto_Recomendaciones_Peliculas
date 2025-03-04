@@ -15,7 +15,7 @@ driver = GraphDatabase.driver(URI, auth=(USERNAME, PASSWORD))
 def create_User(props):
     with driver.session() as session:
         query = f"""
-        CREATE (n:User $props)
+        MERGE (n:User $props)
         RETURN n
         """
         result = session.run(query, props=props)
@@ -113,8 +113,48 @@ def get_actors():
         record = result.data()
         return record
 
-print(get_actors())
+def get_user_preferences(username):
+    with driver.session() as session:
+        query = """
+        MATCH (u:User {username: $username})-[r:LIKES]->(p)
+        RETURN type(r) AS rel_type, labels(p) AS node_type, p.name AS name
+        """
+        result = session.run(query, username=username)
+        return result.data()
 
-    
+def check_user_exists(username):
+    with driver.session() as session:
+        query = """
+        MATCH (u:User {username: $username})
+        RETURN u.username AS username
+        """
+        result = session.run(query, username=username)
+        record = result.single()
+        return record is not None
 
+def get_movie_recommendations(username):
+    with driver.session() as session:
+        # Verificar si el usuario tiene preferencias
+        check_query = """
+        MATCH (u:User {username: $username})-[:LIKES]->()
+        RETURN COUNT(*) AS count
+        """
+        result = session.run(check_query, username=username)
+        count = result.single()["count"]
+
+        if count == 0:
+            return ["No tienes preferencias guardadas. Ve a 'Preferencias' y selecciona géneros, actores y directores."]
+
+        # Generar recomendaciones basadas en las preferencias del usuario
+        query = """
+        MATCH (u:User {username: $username})-[:LIKES]->(pref)
+        MATCH (m:Movie)-[:HAS_GENRE|HAS_ACTOR|HAS_DIRECTOR]->(pref)
+        RETURN m.title AS movie, COUNT(pref) AS score
+        ORDER BY score DESC
+        LIMIT 10
+        """
+        result = session.run(query, username=username)
+        recommendations = [record["movie"] for record in result]
+
+        return recommendations if recommendations else ["No se encontraron recomendaciones. Intenta seleccionar más preferencias."]
 

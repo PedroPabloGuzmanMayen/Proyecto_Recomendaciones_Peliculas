@@ -43,9 +43,16 @@ def preferencias_usuario():
         st.success("Preferencias guardadas")
 
 def recomendar_peliculas():
-    """Sistema de recomendación basado en nodos similares"""
+    """Sistema de recomendación basado en items"""
     st.header("Recomendaciones Personalizadas")
 
-    # Aqui metemos el algoritmo de recomendacion basado en items, pero no le se auxilio
+    username = st.session_state.username
+    recomendaciones = API.get_movie_recommendations(username)
 
-    st.write("Próximamente: Recomendaciones personalizadas")
+    if recomendaciones:
+        st.subheader("Te recomendamos estas películas:")
+        for pelicula in recomendaciones:
+            st.write(f"- 🎬 {pelicula}")
+    else:
+        st.info("No se encontraron recomendaciones. Intenta calificar más películas.")
+
