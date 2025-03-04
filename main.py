@@ -1,6 +1,7 @@
 import pandas as pd
 import streamlit as st
 import API
+import Menu
 
 def main():
     st.title("Sistema de Recomendación de Películas")
@@ -16,9 +17,10 @@ def main():
 
 def login_page():
     st.header("Bienvenido")
-    col1, col2 = st.columns(2)
 
-    with col1:
+    opcion = st.radio("Seleccione una opción", ["Iniciar Sesión", "Registrarse"])
+
+    if opcion=="Iniciar Sesión":
         st.subheader("Login")
         username_login = st.text_input("Usuario", key="login_user")
         password_login = st.text_input("Contraseña", type="password", key="login_password")
@@ -27,7 +29,7 @@ def login_page():
             st.session_state.logged_in = True
             st.session_state.username = username_login
 
-    with col2:
+    elif opcion=="Registrarse":
         st.subheader("Registro")
         username_registro = st.text_input("Nuevo Usuario", key="registro_user")
         password_registro = st.text_input("Contraseña", type="password", key="registro_password")
@@ -40,5 +42,24 @@ def login_page():
             API.create_User(user_props)
             st.success("Usuario registrado correctamente, por favor inicie sesión")
 
+def menu_principal():
+    menu = st.sidebar.radio(
+        "Menú", 
+        [
+            "Perfil", 
+            "Mis Preferencias", 
+            "Reseñar Películas", 
+            "Recomendaciones"
+        ]
+    )
+    
+    if menu == "Perfil":
+        st.header(f"Bienvenido, {st.session_state.username}")
+    
+    elif menu == "Mis Preferencias":
+        Menu.preferencias_usuario()
+    
+    elif menu == "Recomendaciones":
+        Menu.recomendar_peliculas()
 
 main()
