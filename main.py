@@ -1,6 +1,6 @@
 import pandas as pd
 import streamlit as st
-import neo4j_functions
+import API
 
 def main():
     st.title("Sistema de Recomendación de Películas")
@@ -15,3 +15,30 @@ def main():
         menu_principal()
 
 def login_page():
+    st.header("Bienvenido")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("Login")
+        username_login = st.text_input("Usuario", key="login_user")
+        password_login = st.text_input("Contraseña", type="password", key="login_password")
+        # Se actualizan los estados de login
+        if st.button("Iniciar Sesion"):
+            st.session_state.logged_in = True
+            st.session_state.username = username_login
+
+    with col2:
+        st.subheader("Registro")
+        username_registro = st.text_input("Nuevo Usuario", key="registro_user")
+        password_registro = st.text_input("Contraseña", type="password", key="registro_password")
+
+        if st.button("Registrarse"):
+            user_props={
+                    "username": username_registro,
+                    "password": password_registro
+            }
+            API.create_User(user_props)
+            st.success("Usuario registrado correctamente, por favor inicie sesión")
+
+
+main()
