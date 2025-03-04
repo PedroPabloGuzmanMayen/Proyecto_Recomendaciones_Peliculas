@@ -56,3 +56,5 @@ def recomendar_peliculas():
     else:
         st.info("No se encontraron recomendaciones. Intenta calificar más películas.")
 
+
+

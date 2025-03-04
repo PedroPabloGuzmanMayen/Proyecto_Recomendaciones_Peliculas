@@ -169,6 +169,33 @@ def check_user(username):
         record = result.data()
         return record
 
+def get_recommendations_based_on_similarity(username):
+    with driver.session() as session:
+        # 1️⃣ Obtener películas rateadas por el usuario con rating >= 8.0
+        query1 = """
+        MATCH (u:User)-[r:RATES]->(m:Movie)
+        WHERE r.rating >= 8.0 AND u.username = $username
+        RETURN m.title AS title
+        """
+        result1 = session.run(query1, username=username)
+        rated_movies = [record["title"] for record in result1]
+        
+        if not rated_movies:
+            return []  # 🔹 Si no hay películas rateadas, retornar vacío
+
+        # 2️⃣ Obtener películas similares a las que rateó el usuario
+        query2 = """
+        MATCH (m:Movie)-[s:SIMILAR_A]->(rec:Movie)
+        WHERE m.title IN $rated_movies
+        RETURN rec.title AS recommended_movie, s.score AS similarity_score
+        ORDER BY s.score DESC
+        LIMIT 10
+        """
+        result2 = session.run(query2, rated_movies=rated_movies)
+        
+        return [{"title": record["recommended_movie"], "score": record["similarity_score"]} for record in result2]
+
+    
     
 
 
