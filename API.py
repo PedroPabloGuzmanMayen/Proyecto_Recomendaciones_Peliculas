@@ -15,7 +15,7 @@ driver = GraphDatabase.driver(URI, auth=(USERNAME, PASSWORD))
 def create_User(props):
     with driver.session() as session:
         query = f"""
-        CREATE (n:User $props)
+        MERGE (n:User $props)
         RETURN n
         """
         result = session.run(query, props=props)
@@ -27,8 +27,8 @@ def create_User(props):
 def create_user_like_relation(username, otherNodeName, otherNodeLabel, rel_props):
     with driver.session() as session:
         query = f"""
-        MATCH (n:User {{username: $username}})
-        MATCH (m:{otherNodeLabel} {{name: $otherNodeName}})
+        MATCH (n:User) where n.username = $username
+        MATCH (m:{otherNodeLabel}) where m.name = $otherNodeName
         MERGE (n)-[r:LIKES]->(m)
         SET r += $rel_props
         RETURN n, r, m
@@ -113,7 +113,16 @@ def get_actors():
         record = result.data()
         return record
 
-print(get_actors())
+#Método para verificar la existencia de un usuario
+def check_user(username):
+    with driver.session() as session:
+        query = f"""
+        MATCH (n:User {{username: $username}})
+        RETURN n.username, n.password
+        """
+        result = session.run(query, username=username)
+        record = result.data()
+        return record
 
     
 

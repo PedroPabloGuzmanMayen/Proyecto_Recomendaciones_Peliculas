@@ -102,6 +102,12 @@ for row in df.itertuples():
             create_movie_actor("Director", "DIRECTED", "Movie", director_props, movie_props, rel_props)
         
 
+#Similitudes entre películas usando los géneros, actores y directores. 
+
+def create_movie_similarity():
+    pass
+
+
 driver.close()
 
 print("Proceso terminado")
