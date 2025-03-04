@@ -208,5 +208,20 @@ def get_user_ratings(username):
         records = result.data()
         return records
     
+def get_movie(title):
+    with driver.session() as session:
+        query = """
+        MATCH (m:Movie)
+        where m.title = $title
+        RETURN m.title AS title, m.releaseDate AS releaseDate, m.overview AS overview, m.rating AS rating, m.poster AS poster
+        """
+        result = session.run(query, title=title)
+        record = result.single()
+        return record
+    
+
+print(get_movie("Donnie Darko"))
+    
+
 
 
