@@ -47,7 +47,6 @@ def menu_principal():
         "Menú", 
         [
             "Perfil", 
-            "Mis Preferencias",
             "Calificar Peliculas",
             "Recomendaciones en base a tus preferencias"
         ]
@@ -62,9 +61,6 @@ def menu_principal():
             st.error("❌ El usuario NO existe. Revisa la creación del usuario.")
 
     
-    elif menu == "Mis Preferencias":
-        Menu.preferencias_usuario()
-
     elif menu == "Calificar Peliculas":
         Menu.calificar_peliculas()
     
