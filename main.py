@@ -72,7 +72,4 @@ def menu_principal():
     elif menu == "Recomendaciones en base a tus preferencias":
         Menu.recomendar_peliculas()
 
-    elif menu == "Recomendaciones en base a tus similaridad":
-        Menu.
-
 main()
