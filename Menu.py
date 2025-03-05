@@ -102,3 +102,17 @@ def calificar_peliculas():
                     rel_props = {"rating": rating, "comment": comentario, "date": fecha_actual}
                     API.create_movie_review(username, seleccion, rel_props)
                     st.success(f"Calificación guardada para **{seleccion}** ✅")
+
+def recomendaciones_similaridad():
+    """Sistema de recomendación basado en similaridad de películas"""
+    st.header("Recomendaciones Basadas en Similaridad")
+
+    username = st.session_state.username
+    recomendaciones = API.get_recommendations_based_on_similarity(username)
+
+    if recomendaciones:
+        st.subheader("Te recomendamos estas películas:")
+        for pelicula in recomendaciones:
+            st.write(f"- 🎬 {pelicula['title']} (Similitud: {pelicula['score']})")
+    else:
+        st.info("No se encontraron recomendaciones. Intenta calificar más películas.")

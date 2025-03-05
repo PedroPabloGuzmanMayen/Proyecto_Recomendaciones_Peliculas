@@ -49,7 +49,8 @@ def menu_principal():
             "Perfil", 
             "Mis Preferencias",
             "Calificar Peliculas",
-            "Recomendaciones"
+            "Recomendaciones en base a tus preferencias"
+            "Recomendaciones en base a similaridad"
         ]
     )
     
@@ -68,7 +69,10 @@ def menu_principal():
     elif menu == "Calificar Peliculas":
         Menu.calificar_peliculas()
     
-    elif menu == "Recomendaciones":
+    elif menu == "Recomendaciones en base a tus preferencias":
         Menu.recomendar_peliculas()
+
+    elif menu == "Recomendaciones en base a tus similaridad":
+        Menu.
 
 main()
