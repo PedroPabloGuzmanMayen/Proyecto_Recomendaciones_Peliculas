@@ -14,14 +14,15 @@ driver = GraphDatabase.driver(URI, auth=(USERNAME, PASSWORD))
 #Creación de usuarios
 def create_User(props):
     with driver.session() as session:
-        query = f"""
-        MERGE (n:User $props)
-        MERGE (n:User $props)
+        query = """
+        MERGE (n:User {username: $username})
+        SET n.password = $password
         RETURN n
         """
-        result = session.run(query, props=props)
+        result = session.run(query, username=props["username"], password=props["password"])
         record = result.single()
         return record
+
     
 #Creación de relaciones entre usuarios, géneros, actores y directores
 
