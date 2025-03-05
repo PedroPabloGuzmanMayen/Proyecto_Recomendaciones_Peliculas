@@ -47,7 +47,8 @@ def menu_principal():
         "Menú", 
         [
             "Perfil", 
-            "Mis Preferencias", 
+            "Mis Preferencias",
+            "Calificar Peliculas",
             "Recomendaciones"
         ]
     )
@@ -63,6 +64,9 @@ def menu_principal():
     
     elif menu == "Mis Preferencias":
         Menu.preferencias_usuario()
+
+    elif menu == "Calificar Peliculas":
+        Menu.calificar_peliculas()
     
     elif menu == "Recomendaciones":
         Menu.recomendar_peliculas()
