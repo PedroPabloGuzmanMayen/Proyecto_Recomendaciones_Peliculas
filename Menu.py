@@ -44,18 +44,19 @@ def preferencias_usuario():
         st.success("Preferencias guardadas")
 
 def recomendar_peliculas():
-    """Sistema de recomendación basado en items"""
+    """Sistema de recomendación basado en ítems"""
     st.header("Recomendaciones Personalizadas")
 
     username = st.session_state.username
-    recomendaciones = API.get_movie_recommendations(username)
+    recomendaciones = API.get_recommendations_based_on_similarity(username)
 
     if recomendaciones:
-        st.subheader("Te recomendamos estas películas:")
+        st.subheader("Películas recomendadas:")
         for pelicula in recomendaciones:
-            st.write(f"- 🎬 {pelicula}")
+            st.write(f"- {pelicula['title']} (Similitud: {pelicula['score']:.2f})")
     else:
         st.info("No se encontraron recomendaciones. Intenta calificar más películas.")
+
 
 def calificar_peliculas():
     """Permite al usuario calificar cualquier película disponible en la base de datos"""
