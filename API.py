@@ -113,6 +113,7 @@ def get_genres():
         return record
     
 #Obtener información sobre los actores y directores
+# CRUD directores
 def get_directors():
     with driver.session() as session:
         #Obtener los directores más populares
@@ -126,6 +127,27 @@ def get_directors():
         result = session.run(query)
         record = result.data()
         return record
+
+def create_directors(name):
+    with driver.session() as session:
+        query = f"""
+        MERGE (d:Director {name: $name}) RETURN d
+        """
+        return session.run(query, name=name).single()
+
+def delete_director(name):
+    with driver.session() as session:
+        query = f"""
+        MATCH (d:Director {name: $name}) DETACH DELETE d
+        """
+        return session.run(query, name=name)
+
+def update_director(name, new_name):
+    with driver.session() as session:
+        query = f"""
+        MATCH (d:Director {name: $name}) SET d.name = $new_name RETURN d
+        """
+        return session.run(query, name=name, new_name=new_name).single()
 
 #Obtener información sobre los actores
 def get_actors():
