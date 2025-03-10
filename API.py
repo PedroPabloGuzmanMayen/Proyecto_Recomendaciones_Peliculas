@@ -63,6 +63,7 @@ def create_movie_review(username, moviename, rel_props):
         return records
 
 #Obtención de información sobre las películas
+# CRUD para peliculas
 def get_movies():
     with driver.session() as session:
         query = f"""
@@ -72,6 +73,33 @@ def get_movies():
         result = session.run(query)
         record = result.data()
         return record
+
+def create_movie(title, releaseDate, overview, rating, poster):
+    with driver.session() as session:
+        query = f"""
+        MERGE (m:Movie {title: $title})
+        SET m.releaseDate = $release_date, m.overview = $overview, m.rating = $rating, m.poster = $poster
+        RETURN m
+        """
+       return session.run(query, title=title, release_date=release_date, overview=overview, rating=rating, poster=poster).single()
+
+def update_movie(title, updates):
+    with driver.session() as session:
+        set_clause = ", ".join([f"m.{k} = ${k}" for k in update.keys()])
+        query = f"""
+        MATCH (m:Movie {{title: $title}})
+        SET {set_clause}
+        RETURN m
+        """
+        return session.run(query, title=title, **updates).single()
+
+def delete_movie(title):
+    with driver.session() as session:
+        query="""
+        MATCH (m:Movies {title: $title})
+        DETACH DELETE m
+        """
+        session.run(query, title=title)
     
 #Obtener información sobre los géneros
 def get_genres():
