@@ -150,6 +150,7 @@ def update_director(name, new_name):
         return session.run(query, name=name, new_name=new_name).single()
 
 #Obtener información sobre los actores
+# CRUD actores
 def get_actors():
     with driver.session() as session:
         #Obtener los actores más populares
@@ -164,6 +165,27 @@ def get_actors():
         result = session.run(query)
         record = result.data()
         return record
+
+def create_actor(name):
+    with driver.session() as session:
+        query = f"""
+        MERGE (a:Actor {name: $name} RETURN a)
+        """
+        return session.run(query, name=name).single()
+
+def update_actor(name, new_name):
+    with driver.session() as session:
+        query = f"""
+        MATCH (a:Actor {name: $name} SET a.name = $new_name RETURN a)
+        """
+        return session.run(query, name=name, new_name=new_name).single()
+
+def delete_actor(name):
+    with driver.session() as session:
+        query = f"""
+        MATCH (a:Actor {name: $name} DETACH DELETE a)
+        """
+        session.run(query, name=name)
 
 def get_user_preferences(username):
     with driver.session() as session:
