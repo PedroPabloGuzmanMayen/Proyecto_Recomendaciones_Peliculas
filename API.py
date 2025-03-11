@@ -77,27 +77,27 @@ def get_movies():
 def create_movie(title, releaseDate, overview, rating, poster):
     with driver.session() as session:
         query = f"""
-        MERGE (m:Movie {title: $title})
-        SET m.releaseDate = $release_date, m.overview = $overview, m.rating = $rating, m.poster = $poster
-        RETURN m
+        MERGE (n:Movie {{title: $title}})
+        SET n.releaseDate = $releaseDate, n.overview = $overview, n.rating = $rating, n.poster = $poster
+        RETURN n
         """
-       return session.run(query, title=title, release_date=release_date, overview=overview, rating=rating, poster=poster).single()
+        return session.run(query, title=title, releaseDate=releaseDate, overview=overview, rating=rating, poster=poster).single()
 
 def update_movie(title, updates):
     with driver.session() as session:
-        set_clause = ", ".join([f"m.{k} = ${k}" for k in update.keys()])
+        set_clause = ", ".join([f"n.{k} = ${k}" for k in updates.keys()])
         query = f"""
-        MATCH (m:Movie {{title: $title}})
+        MATCH (n:Movie {{title: $title}})
         SET {set_clause}
-        RETURN m
+        RETURN n
         """
         return session.run(query, title=title, **updates).single()
 
 def delete_movie(title):
     with driver.session() as session:
         query="""
-        MATCH (m:Movies {title: $title})
-        DETACH DELETE m
+        MATCH (n:Movie {title: $title})
+        DETACH DELETE n
         """
         session.run(query, title=title)
     
@@ -128,24 +128,24 @@ def get_directors():
         record = result.data()
         return record
 
-def create_directors(name):
+def create_director(name):
     with driver.session() as session:
         query = f"""
-        MERGE (d:Director {name: $name}) RETURN d
+        MERGE (n:Director {{name: $name}}) RETURN n
         """
         return session.run(query, name=name).single()
 
 def delete_director(name):
     with driver.session() as session:
         query = f"""
-        MATCH (d:Director {name: $name}) DETACH DELETE d
+        MATCH (n:Director {name: $name}) DETACH DELETE n
         """
         return session.run(query, name=name)
 
 def update_director(name, new_name):
     with driver.session() as session:
         query = f"""
-        MATCH (d:Director {name: $name}) SET d.name = $new_name RETURN d
+        MATCH (n:Director {{name: $name}}) SET n.name = $new_name RETURN n
         """
         return session.run(query, name=name, new_name=new_name).single()
 
@@ -169,21 +169,21 @@ def get_actors():
 def create_actor(name):
     with driver.session() as session:
         query = f"""
-        MERGE (a:Actor {name: $name} RETURN a)
+        MERGE (n:Actor {{name: $name}}) RETURN n
         """
         return session.run(query, name=name).single()
 
 def update_actor(name, new_name):
     with driver.session() as session:
         query = f"""
-        MATCH (a:Actor {name: $name} SET a.name = $new_name RETURN a)
+        MATCH (n:Actor {{name: $name}}) SET n.name = $new_name RETURN n
         """
         return session.run(query, name=name, new_name=new_name).single()
 
 def delete_actor(name):
     with driver.session() as session:
         query = f"""
-        MATCH (a:Actor {name: $name} DETACH DELETE a)
+        MATCH (n:Actor {name: $name}) DETACH DELETE n
         """
         session.run(query, name=name)
 

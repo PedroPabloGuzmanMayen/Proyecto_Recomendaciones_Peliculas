@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import API
 import Menu
+import admin
 
 def main():
     st.title("Sistema de Recomendación de Películas")
@@ -48,6 +49,7 @@ def menu_principal():
         [
             "Perfil", 
             "Calificar Peliculas",
+            "Administrar Datos",
             "Recomendaciones en base a tus preferencias"
         ]
     )
@@ -60,9 +62,11 @@ def menu_principal():
         else:
             st.error("❌ El usuario NO existe. Revisa la creación del usuario.")
 
-    
     elif menu == "Calificar Peliculas":
         Menu.calificar_peliculas()
+        
+    elif menu == "Administrar Datos":
+        admin.administrar_datos()
     
     elif menu == "Recomendaciones en base a tus preferencias":
         Menu.recomendar_peliculas()
