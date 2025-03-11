@@ -1,5 +1,6 @@
 import streamlit as st
 import API
+import requests
 from datetime import datetime
 
 def recomendar_peliculas():
