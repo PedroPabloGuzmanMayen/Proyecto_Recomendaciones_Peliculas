@@ -207,11 +207,22 @@ def administrar_directores():
     elif operacion == "Crear director":
         st.subheader("Crear nuevo director")
         name = st.text_input("Nombre del director")
+        gender = st.number_input("Género del director o directora: (0 para masculino, 1 para femenino)", min_value=0, max_value=1)
+        photo = st.text_input("URL de la foto del director (si tiene)")
+        date_of_birth = st.date_input("Fecha de nacimiento")
+        description = st.text_area("Descripción del director")
         
         if st.button("Crear director"):
             try:
                 # Corrigiendo el método para crear director
-                result = API.create_director(name=name)
+                props = {
+                    'name': name,
+                    'gender':gender,
+                    'photo':photo,
+                    'date_of_birth':date_of_birth.strftime("%Y-%m-%d"),
+                    'description':description
+                    }
+                result = API.create_director(props)
                 st.success(f"Director '{name}' creado correctamente.")
             except Exception as e:
                 st.error(f"Error al crear el director: {str(e)}")

@@ -128,12 +128,15 @@ def get_directors():
         record = result.data()
         return record
 
-def create_director(name):
+def create_director(props):
     with driver.session() as session:
         query = f"""
-        MERGE (n:Director {{name: $name}}) RETURN n
+        MERGE (n:Director {{name: $name, gender: $gender,
+        profie: $photo, birth_day: $date_of_birth, description: $description}}) RETURN n
         """
-        return session.run(query, name=name).single()
+        return session.run(query, name=props['name'], gender = props['gender'], 
+                           photo = props['photo'], date_of_birth = props['date_of_birth'], 
+                           description = props['description'] ).single()
 
 def delete_director(name):
     with driver.session() as session:
