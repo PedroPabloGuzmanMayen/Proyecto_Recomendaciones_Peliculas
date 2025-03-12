@@ -169,12 +169,15 @@ def get_actors():
         record = result.data()
         return record
 
-def create_actor(name):
+def create_actor(props):
     with driver.session() as session:
         query = f"""
-        MERGE (n:Actor {{name: $name}}) RETURN n
+        MERGE (n:Actor {{name: $name, gender: $gender,
+        profie: $photo, birth_day: $date_of_birth, description: $description}}) RETURN n
         """
-        return session.run(query, name=name).single()
+        return session.run(query, name=props['name'], gender = props['gender'], 
+                           photo = props['photo'], date_of_birth = props['date_of_birth'], 
+                           description = props['description']).single()
 
 def update_actor(name, new_name):
     with driver.session() as session:
@@ -283,6 +286,16 @@ def get_user_ratings(username):
         result = session.run(query, username=username)
         records = result.data()
         return records
+    
+def delete_user_ratings(username, title):
+    with driver.session() as session:
+        query = """
+        MATCH (u:User)-[r:RATES]->(m:Movie)
+        WHERE u.username = $username
+        and m.title = $title
+        DELETE r
+        """
+        session.run(query, username=username, title=title)
     
 def get_movie(title):
     with driver.session() as session:

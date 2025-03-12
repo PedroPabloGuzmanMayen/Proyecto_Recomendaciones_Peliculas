@@ -7,7 +7,7 @@ def administrar_datos():
     # Menú de administración
     opcion = st.selectbox(
         "Seleccione qué desea administrar",
-        ["Películas", "Actores", "Directores"]
+        ["Películas", "Actores", "Directores", "Reviews"]
     )
     
     if opcion == "Películas":
@@ -16,6 +16,8 @@ def administrar_datos():
         administrar_actores()
     elif opcion == "Directores":
         administrar_directores()
+    elif opcion == "Reviews":
+        admin_reviews()
 
 def administrar_peliculas():
     st.subheader("Administración de Películas")
@@ -146,11 +148,22 @@ def administrar_actores():
     elif operacion == "Crear actor":
         st.subheader("Crear nuevo actor")
         name = st.text_input("Nombre del actor")
+        gender = st.number_input("Género del actor o actriz: (0 para masculino, 1 para femenino)", min_value=0, max_value=1)
+        photo = st.text_input("URL de la foto del actor (si tiene)")
+        date_of_birth = st.date_input("Fecha de nacimiento")
+        description = st.text_area("Descripción del actor")
         
         if st.button("Crear actor"):
             try:
                 # Corrigiendo el método para crear actor
-                result = API.create_actor(name=name)
+                props = {
+                    'name': name,
+                    'gender':gender,
+                    'photo':photo,
+                    'date_of_birth':date_of_birth.strftime("%Y-%m-%d"),
+                    'description':description
+                    }
+                result = API.create_actor(props)
                 st.success(f"Actor '{name}' creado correctamente.")
             except Exception as e:
                 st.error(f"Error al crear el actor: {str(e)}")
@@ -255,3 +268,23 @@ def administrar_directores():
                 st.success(f"Director '{name}' eliminado correctamente.")
             except Exception as e:
                 st.error(f"Error al eliminar el director: {str(e)}")
+
+
+
+def admin_reviews():
+    st.header("Eliminar reviews")
+
+    username = st.session_state.username
+
+    reviews = API.get_user_ratings(username)
+
+
+    for review in reviews:
+        st.write(f"🎬 **{review['title']}** - Rating: {review['rating']}")
+        if st.button(f"Eliminar review de {review['title']}"):
+            try:
+                API.delete_user_ratings(username, review['title'])
+                st.success(f"Review de {review['title']} eliminada correctamente.")
+            except Exception as e:
+                st.error(f"Error al eliminar la review: {str(e)}")
+
